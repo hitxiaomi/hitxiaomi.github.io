@@ -52,7 +52,7 @@ language_switcher: false
 
 footer:
   # Specify the date when the site was setup. If not defined, current year will be used.
-  #since: 2015
+  since: 2020
 
   # Icon between year and copyright info.
   icon:
@@ -98,10 +98,10 @@ creative_commons:
 # ---------------------------------------------------------------
 
 # Schemes
-scheme: Muse
-#scheme: Mist
-#scheme: Pisces
-#scheme: Gemini
+# scheme: Muse
+# scheme: Mist
+# scheme: Pisces
+scheme: Gemini
 
 # Dark Mode
 darkmode: false
@@ -118,13 +118,13 @@ darkmode: false
 # External url should start with http:// or https://
 menu:
   home: / || home
-  #about: /about/ || user
-  #tags: /tags/ || tags
-  #categories: /categories/ || th
+  tags: /tags/ || tags
+  categories: /categories/ || th
   archives: /archives/ || archive
-  #schedule: /schedule/ || calendar
-  #sitemap: /sitemap.xml || sitemap
-  #commonweal: /404/ || heartbeat
+  about: /about/ || user
+  # schedule: /schedule/ || calendar
+  # sitemap: /sitemap.xml || sitemap
+  # commonweal: /404/ || heartbeat
 
 # Enable / Disable menu icons / item badges.
 menu_settings:
@@ -178,16 +178,16 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  #GitHub: https://github.com/yourname || github
-  #E-Mail: mailto:yourname@gmail.com || envelope
-  #Weibo: https://weibo.com/yourname || weibo
-  #Google: https://plus.google.com/yourname || google
-  #Twitter: https://twitter.com/yourname || twitter
-  #FB Page: https://www.facebook.com/yourname || facebook
-  #StackOverflow: https://stackoverflow.com/yourname || stack-overflow
-  #YouTube: https://youtube.com/yourname || youtube
-  #Instagram: https://instagram.com/yourname || instagram
-  #Skype: skype:yourname?call|chat || skype
+  GitHub: https://github.com/yourname || github
+  E-Mail: mailto:yourname@gmail.com || envelope
+  # Weibo: https://weibo.com/yourname || weibo
+  Google: https://plus.google.com/yourname || google
+  # Twitter: https://twitter.com/yourname || twitter
+  # FB Page: https://www.facebook.com/yourname || facebook
+  # StackOverflow: https://stackoverflow.com/yourname || stack-overflow
+  YouTube: https://youtube.com/yourname || youtube
+  # Instagram: https://instagram.com/yourname || instagram
+  # Skype: skype:yourname?call|chat || skype
 
 social_icons:
   enable: true
@@ -355,7 +355,7 @@ codeblock:
   # Code Highlight theme
   # Available values: normal | night | night eighties | night blue | night bright | solarized | solarized dark | galactic
   # See: https://github.com/chriskempson/tomorrow-theme
-  highlight_theme: normal
+  highlight_theme: night
   # Add copy button on codeblock
   copy_button:
     enable: false
