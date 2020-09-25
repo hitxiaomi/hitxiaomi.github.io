@@ -178,14 +178,14 @@ site_state: true
 # Key is the link label showing to end users.
 # Value before `||` delimiter is the target permalink, value after `||` delimiter is the name of Font Awesome icon.
 social:
-  GitHub: https://github.com/yourname || github
-  E-Mail: mailto:yourname@gmail.com || envelope
-  # Weibo: https://weibo.com/yourname || weibo
-  Google: https://plus.google.com/yourname || google
+  GitHub: https://github.com/hitxiaomi || github
+  # E-Mail: mailto:milingzhang1@gmail.com || envelope
+  知乎: https://www.zhihu.com/people/xiao-mi-10-73-36/posts || bell
+  # Google: https://plus.google.com/yourname || google
   # Twitter: https://twitter.com/yourname || twitter
   # FB Page: https://www.facebook.com/yourname || facebook
   # StackOverflow: https://stackoverflow.com/yourname || stack-overflow
-  YouTube: https://youtube.com/yourname || youtube
+  # YouTube: https://youtube.com/yourname || youtube
   # Instagram: https://instagram.com/yourname || instagram
   # Skype: skype:yourname?call|chat || skype
 
