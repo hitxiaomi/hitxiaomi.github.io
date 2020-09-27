@@ -25,6 +25,11 @@ source *.sh  2>&1 | grep "msg"
 sudo ln -s target /usr/local/bin
 ```
 
+## 解压 tar.gz 文件
+
+```bash
+tar zxvf *.tar.gz
+```
 
 
 
