@@ -6,13 +6,13 @@ tags:
 categories:
     - linux
 ---
-
+记录工作中常用的linux 命令。
 <!-- more -->
 
 ## 程序运行过程中查看log
 
 
-
+<!-- more -->
 ```bash
 source *.sh  2>&1 | grep "msg"
 ```
@@ -29,6 +29,20 @@ sudo ln -s target /usr/local/bin
 
 ```bash
 tar zxvf *.tar.gz
+```
+
+## linux 时间戳到人类可读时间的转换
+
+```bash
+date -d @1598237685.896981477737427
+
+2020年 08月 24日 星期一 10:54:45 CST
+```
+
+## 查看系统资源占用
+
+```bash
+top -d 0.1
 ```
 
 
