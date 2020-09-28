@@ -45,6 +45,11 @@ date -d @1598237685.896981477737427
 top -d 0.1
 ```
 
+## 查看 syslog
+
+```bash
+tail -f -n 5 /var/log/syslog
+```
 
 
 
