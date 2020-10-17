@@ -123,5 +123,126 @@ int main()
 } 
 ```
 
+# 非递归遍历二叉树
 
+```c++
+// C++ program to print inorder traversal 
+// using stack. 
+#include<bits/stdc++.h> 
+using namespace std; 
 
+/* A binary tree Node has data, pointer to left child 
+and a pointer to right child */
+struct Node 
+{ 
+	int data; 
+	struct Node* left; 
+	struct Node* right; 
+	Node (int data) 
+	{ 
+		this->data = data; 
+		left = right = NULL; 
+	} 
+}; 
+
+/* Iterative function for inorder tree 
+traversal */
+void inOrder(struct Node *root) 
+{ 
+	stack<Node *> s; 
+	Node *curr = root; 
+
+	while (curr != NULL || s.empty() == false) 
+	{ 
+		/* Reach the left most Node of the 
+		curr Node */
+		while (curr != NULL) 
+		{ 
+			/* place pointer to a tree node on 
+			the stack before traversing 
+			the node's left subtree */
+			s.push(curr); 
+			curr = curr->left; 
+		} 
+
+		/* Current must be NULL at this point */
+		curr = s.top(); 
+		s.pop(); 
+
+		cout << curr->data << " "; 
+
+		/* we have visited the node and its 
+		left subtree. Now, it's right 
+		subtree's turn */
+		curr = curr->right; 
+
+	} /* end of while */
+} 
+
+/* Driver program to test above functions*/
+int main() 
+{ 
+
+	/* Constructed binary tree is 
+			1 
+			/ \ 
+		2	 3 
+		/ \ 
+	4	 5 
+	*/
+	struct Node *root = new Node(1); 
+	root->left	 = new Node(2); 
+	root->right	 = new Node(3); 
+	root->left->left = new Node(4); 
+	root->left->right = new Node(5); 
+
+	inOrder(root); 
+	return 0; 
+}
+```
+
+而后序非递归遍历二叉树需要稍作修改
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> result;
+        stack<TreeNode*> nodes_to_be_visited;
+        TreeNode* current = root;
+        TreeNode* previous_visted_node = nullptr;
+        while(current != nullptr || nodes_to_be_visited.empty() != true) {
+            while(current) {
+                nodes_to_be_visited.push(current);
+                current=current->left;
+            }
+            current = nodes_to_be_visited.top();
+            nodes_to_be_visited.pop();
+            if(current->right == nullptr || current->right == previous_visted_node) {
+                //visit current data
+                result.push_back(current->val);
+                previous_visted_node = current;
+                //in order to pop item in stack in next iteration;
+                current = nullptr;
+            }
+            else {
+                nodes_to_be_visited.push(current);
+                current = current->right;
+            }
+        }
+        return result;
+        
+    }
+};
+```

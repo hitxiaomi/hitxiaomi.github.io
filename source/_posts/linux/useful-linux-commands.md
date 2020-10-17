@@ -51,6 +51,8 @@ top -d 0.1
 tail -f -n 5 /var/log/syslog
 ```
 
+## vscode 常用快捷键
+多行选中 shift+Tab 同时向左移动
 
 
 
