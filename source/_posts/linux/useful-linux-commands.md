@@ -54,6 +54,13 @@ tail -f -n 5 /var/log/syslog
 ## vscode 常用快捷键
 多行选中 shift+Tab 同时向左移动
 
+## core dump 生成core文件，查看程序崩溃位置
+
+```bash
+ulimit -c unlimited
+gdb executable core
+bt
+```
 
 
 
