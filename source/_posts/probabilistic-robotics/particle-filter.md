@@ -1,10 +1,12 @@
 ---
 title: particle filter
-date: 2020-09-26 15:34:00
+date: 2020-09-26 22:34:00
 tags:
     - 概率机器人
+    - slam
+    - robotics
 categories:
-    - 概率机器人
+    - rototics
 mathjax: true
 description: 粒子滤波在移动机器人中的应用.
 ---
