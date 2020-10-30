@@ -20,30 +20,38 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="学而不思则罔">
-<meta property="og:type" content="website">
-<meta property="og:title" content="xiaomi-blog">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="最小二乘算法简介。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="least_squares_introduction">
+<meta property="og:url" content="http://example.com/2020/10/30/probabilistic-robotics/least-squares-introduction/index.html">
 <meta property="og:site_name" content="xiaomi-blog">
-<meta property="og:description" content="学而不思则罔">
+<meta property="og:description" content="最小二乘算法简介。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2020/10/30/probabilistic-robotics/least-squares-introduction/explain.png">
+<meta property="og:image" content="http://example.com/2020/10/30/probabilistic-robotics/least-squares-introduction/error_function.png">
+<meta property="article:published_time" content="2020-10-30T14:59:37.000Z">
+<meta property="article:modified_time" content="2020-10-30T13:06:12.994Z">
 <meta property="article:author" content="xiaomi">
+<meta property="article:tag" content="概率机器人">
+<meta property="article:tag" content="slam">
+<meta property="article:tag" content="robotics">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/10/30/probabilistic-robotics/least-squares-introduction/explain.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2020/10/30/probabilistic-robotics/least-squares-introduction/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>xiaomi-blog</title>
+  <title>least_squares_introduction | xiaomi-blog</title>
   
 
 
@@ -157,9 +165,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -175,10 +184,9 @@
       <meta itemprop="name" content="xiaomi-blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/30/probabilistic-robotics/least-squares-introduction/" class="post-title-link" itemprop="url">least_squares_introduction</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          least_squares_introduction
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -211,273 +219,68 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>最小二乘算法简介。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/30/probabilistic-robotics/least-squares-introduction/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+        <p>最小二乘算法简介。</p>
+<a id="more"></a>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>移动机器人slam 解决方案，一般包括，卡尔曼滤波器，粒子滤波器以及图优化。基于图优化的slam是目前的主流方案。最小二乘方法是基于图优化的slam采用的主要工具。</p>
+<p>总体来说，最小二乘是一个求解超定方程的方法。超定方程中方程的个数多于未知数的个数，此时通过最小化方程中的误差平方和，来求解未知数。最小二乘方法是求解大规模问题的标准方法，经常用来在给定观测的情况下估计模型的参数。</p>
+<h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>系统由一系列的观测方程${f_i(\mathbf x) }_{i=1:n}$ 所描述,表示机器人状态到测量值的映射关系。并做如下定义:</p>
+<ul>
+<li>$\mathbf x$ 表示系统的状态向量,我们需要估计的量，在移动机器人中，通常表示机器人位置和旋转角.</li>
+<li>$\mathbf z_i$ 表示跟系统状态$\mathbf x$ 有关的实际测量值(real measurements)。</li>
+<li>$\hat{\mathbf z}_i=f_i(\mathbf x)$表示基于系统当前状态得到的预测的测量值(predicted measurements).</li>
+</ul>
+<p>其中，关于状态$\mathbf x$ 的测量$\mathbf z_{i:n}$是已知的。我们的目标就是估计可以最好的解释 我们测量值的 系统状态。换句话说就是，系统状态如何配置，最有可能获取到目前的测量数据。</p>
+<p>系统状态，预测的测量值，实际的测量值之间的关系如下图所示。</p>
+<p><img src="explain.png"></p>
+<p>系统状态是未知的，是需要估计的量，但是需要注意，系统状态是有初始值的。根据系统状态，可以利用观测方程得到预测的测量值。实际的测量值实时通过传感器数据获取。我们目标就是，对系统状态进行最优估计，得到可以最好的解释当前测量值的状态量。也就是说，系统状态量处于什么值，才能最大概率获取到当前的测量数据。</p>
+<p>例如，在计算机视觉中，$\mathbf x$表示世界坐标系下特征点的3D坐标，是我们需要估计的量，同时我们知道它的初始值是多少，$\mathbf z_i$为其在图像坐标系下的像素坐标，是真实的测量值。相机的pose已知，我们可以根据针孔相机模型$f_i(\mathbf x)$得到特征点在相机坐标系下预测的测量值$\hat \mathbf z_i$. 然后对特征点的3D位置进行估计，调整特征点的3D坐标，使得实际的测量值和预测的测量值的误差减小。</p>
+<h1 id="误差方程"><a href="#误差方程" class="headerlink" title="误差方程"></a>误差方程</h1><p>误差方程就是实际的与预测的测量值的差异<br>$$\mathbf e_i(\mathbf x) = \mathbf z_i - f_i(\mathbf x)$$<br>我们假设误差的平均值为零，并且呈正态分布. Gauss 误差，信息矩阵为$\mathbf \Omega_i$, 测量的平方误差仅取决于系统状态，并且是标量.<br>$$e_i(\mathbf x) = \mathbf e_i^{\top}(\mathbf x)\mathbf \Omega_i \mathbf e_i(\mathbf x)$$</p>
+<p>我们的目标就是，在给定的所有测量值情况下，找到最优的系统状态$\mathbf x^*$，使得误差最小。</p>
+<p><img src="error_function.png"></p>
+<h1 id="求解"><a href="#求解" class="headerlink" title="求解"></a>求解</h1><p>我们考虑通过迭代的方式对系统状态进行求解。首先做如下假设</p>
+<ul>
+<li>有”良好”的系统状态初始值</li>
+<li>误差方程平滑</li>
+</ul>
+<p>通过迭代方式求解主要包含如下几个步骤</p>
+<ul>
+<li>在当前解/初始值附近，对误差项进行线性化</li>
+<li>计算误差平方函数的一阶导数</li>
+<li>将上一步得到的结果=0，求解线性方程</li>
+<li>得到新状态</li>
+<li>迭代</li>
+</ul>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E6%A6%82%E7%8E%87%E6%9C%BA%E5%99%A8%E4%BA%BA/" rel="tag"># 概率机器人</a>
+              <a href="/tags/slam/" rel="tag"># slam</a>
+              <a href="/tags/robotics/" rel="tag"># robotics</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/12/algorithms/binary-tree-traversal/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/mountietocat.png">
-      <meta itemprop="name" content="xiaomi">
-      <meta itemprop="description" content="学而不思则罔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xiaomi-blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/12/algorithms/binary-tree-traversal/" class="post-title-link" itemprop="url">二叉树的遍历</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-12 21:41:51" itemprop="dateCreated datePublished" datetime="2020-10-12T21:41:51+08:00">2020-10-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-27 15:11:35" itemprop="dateModified" datetime="2020-10-27T15:11:35+08:00">2020-10-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>二叉树的遍历方式，根据根节点的访问顺序可以分为前序遍历，中序遍历以及后续遍历。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/10/12/algorithms/binary-tree-traversal/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/26/probabilistic-robotics/particle-filter/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/mountietocat.png">
-      <meta itemprop="name" content="xiaomi">
-      <meta itemprop="description" content="学而不思则罔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xiaomi-blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/26/probabilistic-robotics/particle-filter/" class="post-title-link" itemprop="url">particle filter</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-26 22:34:00" itemprop="dateCreated datePublished" datetime="2020-09-26T22:34:00+08:00">2020-09-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-30 16:50:40" itemprop="dateModified" datetime="2020-10-30T16:50:40+08:00">2020-10-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/rototics/" itemprop="url" rel="index"><span itemprop="name">rototics</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>粒子滤波在移动机器人中的应用.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/26/probabilistic-robotics/particle-filter/">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/12/algorithms/binary-tree-traversal/" rel="prev" title="二叉树的遍历">
+      <i class="fa fa-chevron-left"></i> 二叉树的遍历
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/26/linux/useful-linux-commands/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/mountietocat.png">
-      <meta itemprop="name" content="xiaomi">
-      <meta itemprop="description" content="学而不思则罔">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xiaomi-blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/26/linux/useful-linux-commands/" class="post-title-link" itemprop="url">useful-linux-commands</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-26 01:26:50" itemprop="dateCreated datePublished" datetime="2020-09-26T01:26:50+08:00">2020-09-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-30 16:50:51" itemprop="dateModified" datetime="2020-10-30T16:50:51+08:00">2020-10-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>记录工作中常用的linux 命令。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/09/26/linux/useful-linux-commands/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -530,6 +333,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89"><span class="nav-number">2.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AF%E5%B7%AE%E6%96%B9%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">误差方程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">求解</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
