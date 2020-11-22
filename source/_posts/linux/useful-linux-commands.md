@@ -15,6 +15,9 @@ categories:
 <!-- more -->
 ```bash
 source *.sh  2>&1 | grep "msg"
+
+# save log file
+source *.sh 2>&1 | tee log.txt
 ```
 
 
