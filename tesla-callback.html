@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>ChargeMark · 特斯拉授权回调</title>
+<!--
+  OAuth redirect target for the ChargeMark Android app. The app's in-app login intercepts this
+  URL before it loads; the page only appears when signing in through a normal browser, and then
+  lets the user copy the full callback link back into the app. Everything stays in this page:
+  no external resources, and query values are only ever written with textContent.
+-->
+<style>
+  body { font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; max-width: 36rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1b1b1b; background: #fff; }
+  h1 { font-size: 1.4rem; }
+  .muted { color: #4a4a4a; }
+  label { display: block; margin-top: 1rem; font-weight: 600; }
+  textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .85rem; padding: .5rem; }
+  button { font-size: 1rem; padding: .6rem 1.2rem; margin-top: .5rem; border-radius: .5rem; border: 0; background: #1f6f5c; color: #fff; cursor: pointer; }
+  button:focus-visible { outline: 3px solid #f2b705; outline-offset: 2px; }
+  @media (prefers-color-scheme: dark) { body { background: #121212; color: #eee; } .muted { color: #c8c8c8; } button { background: #2f8f77; } }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title">满电刻度（ChargeMark）登录回调页</h1>
+  <p id="message" class="muted">这是 ChargeMark 安卓 App 的特斯拉授权回调地址。在 App 里登录时，App 会自动接住这里的跳转，一般看不到这个页面。</p>
+  <div id="result" hidden>
+    <label for="link">完整链接</label>
+    <textarea id="link" rows="5" readonly></textarea>
+    <button id="copy" type="button">复制链接</button>
+    <p id="copied" role="status" aria-live="polite"></p>
+  </div>
+</main>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var title = document.getElementById('title');
+  var message = document.getElementById('message');
+
+  if (params.get('error')) {
+    var detail = params.get('error_description');
+    title.textContent = '授权没有完成';
+    message.textContent = '特斯拉返回：' + params.get('error') + (detail ? '（' + detail + '）' : '') + '。回到 App 重新登录即可。';
+    return;
+  }
+  if (!params.get('code')) return;
+
+  title.textContent = '授权成功';
+  message.textContent = '把下面的完整链接复制下来，回到 App，粘贴到「粘贴回调链接」，再点「用这个链接完成登录」。授权码很快会过期，而且只能用一次。';
+  var link = document.getElementById('link');
+  link.value = window.location.href;
+  document.getElementById('result').hidden = false;
+
+  document.getElementById('copy').addEventListener('click', function () {
+    var status = document.getElementById('copied');
+    var fallback = function () {
+      link.select();
+      status.textContent = document.execCommand('copy') ? '已复制' : '请长按上面的链接手动复制';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(window.location.href).then(function () { status.textContent = '已复制'; }, fallback);
+    } else {
+      fallback();
+    }
+  });
+})();
+</script>
+</body>
+</html>
